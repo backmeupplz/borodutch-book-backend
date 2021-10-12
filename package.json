@@ -23,15 +23,14 @@
     "koa": "^2.13.3",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^10.1.1",
-    "mongoose": "6.0.10"
+    "mongoose": "6.0.10",
+    "telegraf": "^4.4.2"
   },
   "devDependencies": {
     "@koa/cors": "^3.1.0",
     "@typegoose/typegoose": "^9.1.0",
-    "@types/dotenv": "^8.2.0",
     "@types/koa": "^2.13.4",
     "@types/koa-bodyparser": "^4.3.3",
-    "@types/mongoose": "^5.10.2",
     "@types/node": "^16.10.3",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
