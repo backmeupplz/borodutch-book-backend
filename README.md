@@ -14,11 +14,12 @@ And you should be good to go! Feel free to fork and submit pull requests.
 
 ## Environment variables
 
-| Name             | Description                              |
-| ---------------- | ---------------------------------------- |
-| `MONGO`          | URL of the mongo database                |
-| `TELEGRAM_TOKEN` | Telegram bot token for reporting         |
-| `PORT`           | Port to run server on (defaults to 1337) |
+| Name               | Description                              |
+| ------------------ | ---------------------------------------- |
+| `MONGO`            | URL of the mongo database                |
+| `TELEGRAM_TOKEN`   | Telegram bot token for reporting         |
+| `TELEGRAM_CHAT_ID` | Telegram chat id for reporting           |
+| `PORT`             | Port to run server on (defaults to 1337) |
 
 Also, please, consider looking at `.env.sample`.
 
