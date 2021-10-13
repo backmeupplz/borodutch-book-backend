@@ -9,7 +9,7 @@ export default class LoginController {
   @Post('/')
   async facebook(@Body('email') email: string) {
     await EmailModel.create({ email })
-    report(`${email} has been added to the Boroudtch Book waitlist`)
+    report(`${email} has been added to the Borodutch Book waitlist`)
   }
 }
 
