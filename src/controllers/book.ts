@@ -53,7 +53,7 @@ export default class LoginController {
     const files = readdirSync(resolve(cwd(), 'book')).filter(
       (name) => name !== '.gitkeep'
     )
-    const extensions = files.map((name) => name.split('.').pop())
+    const extensions = files.map((name) => name.split('.').slice(1).join('.'))
     if (!extensions.includes(format)) {
       return ctx.throw(badRequest('Нет такого формата!'))
     }
