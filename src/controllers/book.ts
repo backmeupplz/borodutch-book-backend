@@ -18,7 +18,7 @@ export default class LoginController {
     const files = readdirSync(resolve(cwd(), 'book')).filter(
       (name) => name !== '.gitkeep'
     )
-    return files.map((name) => name.split('.').pop())
+    return files.map((name) => name.split('.').slice(1).join('.'))
   }
 
   @Post('/:format')
