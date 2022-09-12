@@ -6,8 +6,10 @@ import { createReadStream, readdirSync } from 'fs'
 import { cwd } from 'process'
 import { resolve } from 'path'
 import Format from '@/validators/Format'
+import Index from '@/validators/Index'
 import Signature from '@/validators/Signature'
 import balanceOf from '@/helpers/balanceOf'
+import book from '@/helpers/book'
 import report from '@/helpers/report'
 import reportError from '@/helpers/reportError'
 
@@ -19,6 +21,27 @@ export default class LoginController {
       (name) => name !== '.gitkeep'
     )
     return files.map((name) => name.split('.').slice(1).join('.'))
+  }
+
+  @Get('/chapters/:index')
+  json(@Params() { index }: Index) {
+    return book[index]
+  }
+
+  @Get('/toc')
+  chapterNames() {
+    return book.map((chapter) => ({
+      title: chapter.title,
+      slug: chapter.slug,
+      subchapters: chapter.subchapters.map((subchapter) => ({
+        title: subchapter.title,
+        slug: subchapter.slug,
+        subchapters: subchapter.subchapters?.map((subchapter) => ({
+          title: subchapter.title,
+          slug: subchapter.slug,
+        })),
+      })),
+    }))
   }
 
   @Post('/:format')

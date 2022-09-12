@@ -22,7 +22,9 @@
     "grammy": "^1.9.2",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
-    "koa-router": "^12.0.0"
+    "koa-router": "^12.0.0",
+    "node-html-parser": "^5.4.2",
+    "transliteration": "^2.3.5"
   },
   "devDependencies": {
     "@types/koa": "^2.13.5",
