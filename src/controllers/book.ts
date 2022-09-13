@@ -1,15 +1,17 @@
 import { BigNumber, utils } from 'ethers'
 import { Body, Controller, Ctx, Get, Params, Post } from 'amala'
 import { Context } from 'koa'
-import { badRequest } from '@hapi/boom'
+import { badRequest, notFound } from '@hapi/boom'
 import { createReadStream, readdirSync } from 'fs'
 import { cwd } from 'process'
 import { resolve } from 'path'
+import Chapter from '@/models/Chapter'
 import Format from '@/validators/Format'
-import Index from '@/validators/Index'
 import Signature from '@/validators/Signature'
+import Slug from '@/validators/Slug'
 import balanceOf from '@/helpers/balanceOf'
 import book from '@/helpers/book'
+import extractSubchapters from '@/helpers/extractSubchapters'
 import report from '@/helpers/report'
 import reportError from '@/helpers/reportError'
 
@@ -23,9 +25,27 @@ export default class LoginController {
     return files.map((name) => name.split('.').slice(1).join('.'))
   }
 
-  @Get('/chapters/:index')
-  json(@Params() { index }: Index) {
-    return book[index]
+  @Get('/chapters/:slug')
+  json(@Ctx() ctx: Context, @Params() { slug }: Slug) {
+    const chapter =
+      book.find((chapter) => chapter.slug === slug) ||
+      book
+        .reduce(extractSubchapters, [] as Chapter[])
+        .find((chapter) => chapter.slug === slug) ||
+      book
+        .reduce(extractSubchapters, [] as Chapter[])
+        .reduce(extractSubchapters, [] as Chapter[])
+        .find((chapter) => chapter.slug === slug)
+    if (!chapter) {
+      return ctx.throw(notFound('No chapter found!'))
+    }
+    return {
+      level: chapter.level,
+      title: chapter.title,
+      slug: chapter.slug,
+      beginning: chapter.beginning,
+      content: chapter.content,
+    }
   }
 
   @Get('/toc')
