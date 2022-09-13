@@ -25,17 +25,12 @@ export default class LoginController {
     return files.map((name) => name.split('.').slice(1).join('.'))
   }
 
-  @Get('/chapters/:slug')
+  @Get('/chapter/:slug')
   json(@Ctx() ctx: Context, @Params() { slug }: Slug) {
-    const chapter =
-      book.find((chapter) => chapter.slug === slug) ||
-      book
-        .reduce(extractSubchapters, [] as Chapter[])
-        .find((chapter) => chapter.slug === slug) ||
-      book
-        .reduce(extractSubchapters, [] as Chapter[])
-        .reduce(extractSubchapters, [] as Chapter[])
-        .find((chapter) => chapter.slug === slug)
+    const allChapters = book
+      .concat(extractSubchapters(book))
+      .concat(extractSubchapters(extractSubchapters(book)))
+    const chapter = allChapters.find((chapter) => chapter.slug === slug)
     if (!chapter) {
       return ctx.throw(notFound('No chapter found!'))
     }
