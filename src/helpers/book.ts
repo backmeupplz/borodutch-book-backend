@@ -16,7 +16,7 @@ function extractContent(node: Node): Content {
   // Termintaion condition
   if (!node.childNodes?.length || !(node instanceof HTMLElement)) {
     return {
-      text: node.rawText.replace('\t', ''),
+      text: node.rawText.replace(/\t/gi, '').replace(/\n/gi, ''),
     }
   }
   return {
