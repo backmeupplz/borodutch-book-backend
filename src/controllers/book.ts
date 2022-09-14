@@ -46,12 +46,15 @@ export default class LoginController {
   @Get('/toc')
   chapterNames() {
     return book.map((chapter) => ({
+      level: chapter.level,
       title: chapter.title,
       slug: chapter.slug,
       subchapters: chapter.subchapters.map((subchapter) => ({
+        level: subchapter.level,
         title: subchapter.title,
         slug: subchapter.slug,
         subchapters: subchapter.subchapters?.map((subchapter) => ({
+          level: subchapter.level,
           title: subchapter.title,
           slug: subchapter.slug,
         })),
