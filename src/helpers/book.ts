@@ -21,6 +21,7 @@ function extractContent(node: Node): Content {
   }
   return {
     class: node.getAttribute('class'),
+    tagName: node.tagName,
     children: node.childNodes.map(extractContent),
   }
 }
