@@ -47,7 +47,7 @@ function prepareBook() {
   let tempSubSubChapter = null as Chapter | null
   for (const child of contentChildren) {
     // new chapter
-    if (child.attributes.class?.match(/heading-1/gi)) {
+    if (child.attributes.class?.match(/heading-1/i)) {
       tempChapter = {
         level: 0,
         title: child.rawText,
@@ -57,11 +57,12 @@ function prepareBook() {
         content: [],
       }
       tempSubChapter = null
+      tempSubSubChapter = null
       result.push(tempChapter)
       continue
     }
     // new subchapter
-    if (child.attributes.class?.match(/heading-2/gi)) {
+    if (child.attributes.class?.match(/heading-2/i)) {
       tempSubChapter = {
         level: 1,
         title: child.rawText,
@@ -74,7 +75,7 @@ function prepareBook() {
       continue
     }
     // new subsubchapter
-    if (child.attributes.class?.match(/heading-3/gi)) {
+    if (child.attributes.class?.match(/heading-3/i)) {
       tempSubSubChapter = {
         level: 2,
         title: child.rawText,
