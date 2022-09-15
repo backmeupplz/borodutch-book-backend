@@ -16,7 +16,11 @@ function extractContent(node: Node): Content {
   // Termintaion condition
   if (!node.childNodes?.length || !(node instanceof HTMLElement)) {
     return {
-      text: node.rawText.replace(/\t/gi, '').replace(/\n/gi, ''),
+      text: node.rawText
+        .replace(/\t/gi, '')
+        .replace(/\n/gi, '')
+        .replace(/&lt;/gi, '<')
+        .replace(/&gt;/gi, '>'),
     }
   }
   return {
@@ -71,6 +75,7 @@ function prepareBook() {
         subchapters: [],
         content: [],
       }
+      tempSubSubChapter = null
       tempChapter?.subchapters.push(tempSubChapter)
       continue
     }
