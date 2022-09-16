@@ -9,13 +9,18 @@ import Format from '@/validators/Format'
 import Signature from '@/validators/Signature'
 import Slug from '@/validators/Slug'
 import balanceOf from '@/helpers/balanceOf'
-import book from '@/helpers/book'
+import book, { version } from '@/helpers/book'
 import extractSubchapters from '@/helpers/extractSubchapters'
 import report from '@/helpers/report'
 import reportError from '@/helpers/reportError'
 
 @Controller('/book')
 export default class LoginController {
+  @Get('/version')
+  version() {
+    return { version }
+  }
+
   @Get('/formats')
   formats() {
     const disallowedFormats = ['.gitkeep', 'html', 'json']

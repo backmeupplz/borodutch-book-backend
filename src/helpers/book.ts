@@ -30,6 +30,8 @@ function extractContent(node: Node): Content {
   }
 }
 
+export let version = ''
+
 function prepareBook() {
   const root = parse(
     readFileSync(resolve(cwd(), 'book', 'wdlaty.html'), 'utf8'),
@@ -42,6 +44,8 @@ function prepareBook() {
       },
     }
   )
+  version =
+    root.getElementById('_idContainer003').childNodes[1]?.childNodes[0]?.rawText
   const contentChildren = root
     .getElementById('_idContainer008')
     .childNodes.filter((c) => c instanceof HTMLElement) as HTMLElement[]
