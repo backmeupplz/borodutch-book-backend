@@ -18,8 +18,10 @@ import reportError from '@/helpers/reportError'
 export default class LoginController {
   @Get('/formats')
   formats() {
+    const disallowedFormats = ['.gitkeep', 'html', 'json']
+    const disallowedFormatsRegex = new RegExp(disallowedFormats.join('|'), 'i')
     const files = readdirSync(resolve(cwd(), 'book')).filter(
-      (name) => name !== '.gitkeep'
+      (name) => !disallowedFormatsRegex.test(name)
     )
     return files.map((name) => name.split('.').slice(1).join('.'))
   }
