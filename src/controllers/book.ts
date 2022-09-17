@@ -61,7 +61,7 @@ export default class LoginController {
     if (!footnote) {
       return ctx.throw(notFound('No footnote found!'))
     }
-    return { footnote }
+    return footnote
   }
 
   @Get('/toc')
