@@ -6,10 +6,11 @@ import { createReadStream, readdirSync } from 'fs'
 import { cwd } from 'process'
 import { resolve } from 'path'
 import Format from '@/validators/Format'
+import Index from '@/validators/Index'
 import Signature from '@/validators/Signature'
 import Slug from '@/validators/Slug'
 import balanceOf from '@/helpers/balanceOf'
-import book, { version } from '@/helpers/book'
+import book, { footnotes, version } from '@/helpers/book'
 import extractSubchapters from '@/helpers/extractSubchapters'
 import report from '@/helpers/report'
 import reportError from '@/helpers/reportError'
@@ -47,6 +48,20 @@ export default class LoginController {
       beginning: chapter.beginning,
       content: chapter.content,
     }
+  }
+
+  @Get('/footnotes')
+  footnotes() {
+    return { footnotes }
+  }
+
+  @Get('/footnote/:index')
+  footnote(@Ctx() ctx: Context, @Params() { index }: Index) {
+    const footnote = footnotes[index]
+    if (!footnote) {
+      return ctx.throw(notFound('No footnote found!'))
+    }
+    return { footnote }
   }
 
   @Get('/toc')

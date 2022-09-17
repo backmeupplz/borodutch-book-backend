@@ -31,6 +31,10 @@ function extractContent(node: Node): Content {
 }
 
 export let version = ''
+export const footnotes = [] as {
+  title: string
+  url?: string
+}[]
 
 function prepareBook() {
   const root = parse(
@@ -109,6 +113,32 @@ function prepareBook() {
     // content
     const target = tempSubSubChapter || tempSubChapter
     target?.content.push(extractContent(child))
+  }
+  // Footnotes
+  const footnotesContainer = root.getElementById('_idContainer009')
+  for (const child of footnotesContainer.childNodes) {
+    if (
+      child instanceof HTMLElement &&
+      child.getAttribute('class') === 'Endnote'
+    ) {
+      // console.log(child)
+      const lastChild = child.childNodes.pop()
+      if (!lastChild || !(lastChild instanceof HTMLElement)) {
+        continue
+      }
+      const title =
+        child.text.match(/«(.+)»/i)?.[1] ||
+        lastChild.text.match(/\d+\. (.+)/i)?.[1]
+      if (!title) {
+        continue
+      }
+      const url = lastChild.getAttribute('href')
+      const footnote = {
+        title,
+        url,
+      }
+      footnotes.push(footnote)
+    }
   }
   return result
 }
