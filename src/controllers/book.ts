@@ -52,7 +52,7 @@ export default class LoginController {
 
   @Get('/footnotes')
   footnotes() {
-    return { footnotes }
+    return footnotes
   }
 
   @Get('/footnote/:index')
