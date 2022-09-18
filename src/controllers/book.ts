@@ -31,7 +31,7 @@ export default class LoginController {
 
   @Get('/formats')
   formats() {
-    const disallowedFormats = ['.gitkeep', 'html', 'json']
+    const disallowedFormats = ['.gitkeep', 'html']
     const disallowedFormatsRegex = new RegExp(disallowedFormats.join('|'), 'i')
     const files = readdirSync(resolve(cwd(), 'book')).filter(
       (name) => !disallowedFormatsRegex.test(name)
