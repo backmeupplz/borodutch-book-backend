@@ -26,6 +26,11 @@ function extractContent(node: Node): Content {
   return {
     class: node.getAttribute('class'),
     tagName: node.tagName,
+    slug:
+      node.getAttribute('class')?.includes('Heading-4') ||
+      node.getAttribute('class')?.includes('Heading-5')
+        ? getSlug(node.text || '')
+        : undefined,
     children: node.childNodes.map(extractContent),
   }
 }
