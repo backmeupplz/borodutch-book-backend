@@ -73,7 +73,7 @@ export default class LoginController {
           return ctx.throw(badRequest('Не получилось получить баланс!'))
         }
         if (balance.lte(0)) {
-          await reportError(`${owner} без баланса пытается скачать книгу!`)
+          await reportError(`💸 ${owner} без баланса пытается получить главу`)
           return ctx.throw(
             badRequest('Вам необходимо купить NFT, чтобы скачать книгу!')
           )
@@ -145,7 +145,7 @@ export default class LoginController {
       return ctx.throw(badRequest('Не получилось получить баланс!'))
     }
     if (balance.lte(0)) {
-      await reportError(`${owner} без баланса пытается скачать книгу!`)
+      await reportError(`💸 ${owner} без баланса пытается скачать книгу`)
       return ctx.throw(
         badRequest('Вам необходимо купить NFT, чтобы скачать книгу!')
       )
