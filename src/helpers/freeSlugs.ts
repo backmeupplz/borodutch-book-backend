@@ -1,3 +1,5 @@
+// TODO: add editions
+
 export default [
   'vvedenie',
   'ob-avtore',

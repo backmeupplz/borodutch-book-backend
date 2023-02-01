@@ -2,16 +2,17 @@ import { BigNumber, utils } from 'ethers'
 import { Body, Controller, Ctx, Get, Params, Post, Query } from 'amala'
 import { Context } from 'koa'
 import { badRequest, notFound } from '@hapi/boom'
+import { books, footnotes, versions } from '@/helpers/book'
 import { createReadStream, readdirSync } from 'fs'
 import { cwd } from 'process'
 import { resolve } from 'path'
+import Edition from '@/validators/Edition'
 import Format from '@/validators/Format'
 import Index from '@/validators/Index'
 import OptionalSignature from '@/validators/OptionalSignature'
 import Signature from '@/validators/Signature'
 import Slug from '@/validators/Slug'
 import balanceOf from '@/helpers/balanceOf'
-import book, { footnotes, version } from '@/helpers/book'
 import extractSubchapters from '@/helpers/extractSubchapters'
 import freeSlugs from '@/helpers/freeSlugs'
 import report from '@/helpers/report'
@@ -25,8 +26,8 @@ export default class LoginController {
   }
 
   @Get('/version')
-  version() {
-    return { version }
+  version(@Params() { edition }: Edition) {
+    return { version: versions[edition] }
   }
 
   @Get('/formats')
@@ -36,15 +37,20 @@ export default class LoginController {
     const files = readdirSync(resolve(cwd(), 'book')).filter(
       (name) => !disallowedFormatsRegex.test(name)
     )
-    return files.map((name) => name.split('.').slice(1).join('.'))
+    // Deduplicate
+    const filesDeduplicated = files.filter(
+      (name, index) => files.indexOf(name) === index
+    )
+    return filesDeduplicated.map((name) => name.split('.').slice(1).join('.'))
   }
 
   @Get('/chapter/:slug')
   async chapter(
     @Ctx() ctx: Context,
-    @Params() { slug }: Slug,
+    @Params() { slug, edition }: Slug & Edition,
     @Query() { signature, message }: OptionalSignature
   ) {
+    const book = books[edition]
     const allChapters = book
       .concat(extractSubchapters(book))
       .concat(extractSubchapters(extractSubchapters(book)))
@@ -95,8 +101,8 @@ export default class LoginController {
   }
 
   @Get('/footnote/:index')
-  footnote(@Ctx() ctx: Context, @Params() { index }: Index) {
-    const footnote = footnotes[index]
+  footnote(@Ctx() ctx: Context, @Params() { index, edition }: Index & Edition) {
+    const footnote = footnotes[edition][index]
     if (!footnote) {
       return ctx.throw(notFound('No footnote found!'))
     }
@@ -104,7 +110,8 @@ export default class LoginController {
   }
 
   @Get('/toc')
-  chapterNames() {
+  chapterNames(@Params() { edition }: Edition) {
+    const book = books[edition]
     return book.map((chapter) => ({
       level: chapter.level,
       title: chapter.title,
