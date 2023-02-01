@@ -25,30 +25,29 @@ export default class LoginController {
     return freeSlugs
   }
 
-  @Get('/version')
-  version(@Params() { edition }: Edition) {
-    return { version: versions[edition] }
+  @Get('/versions')
+  version() {
+    return versions
   }
 
   @Get('/formats')
   formats() {
-    const disallowedFormats = ['.gitkeep', 'html']
+    const disallowedFormats = ['.gitkeep', 'html', 'DS_Store']
     const disallowedFormatsRegex = new RegExp(disallowedFormats.join('|'), 'i')
     const files = readdirSync(resolve(cwd(), 'book')).filter(
       (name) => !disallowedFormatsRegex.test(name)
     )
-    // Deduplicate
-    const filesDeduplicated = files.filter(
-      (name, index) => files.indexOf(name) === index
+    const formatNames = files.map((name) => name.split('.').slice(1).join('.'))
+    return formatNames.filter(
+      (name, index) => formatNames.indexOf(name) === index
     )
-    return filesDeduplicated.map((name) => name.split('.').slice(1).join('.'))
   }
 
   @Get('/chapter/:slug')
   async chapter(
     @Ctx() ctx: Context,
-    @Params() { slug, edition }: Slug & Edition,
-    @Query() { signature, message }: OptionalSignature
+    @Params() { slug }: Slug,
+    @Query() { signature, message, edition }: OptionalSignature & Edition
   ) {
     const book = books[edition]
     const allChapters = book
@@ -58,7 +57,7 @@ export default class LoginController {
     if (!chapter) {
       return ctx.throw(notFound('No chapter found!'))
     }
-    if (!freeSlugs.includes(slug)) {
+    if (!freeSlugs[edition].includes(slug)) {
       if (!signature || !message) {
         return ctx.throw(badRequest('No signature provided!'))
       } else {
@@ -96,12 +95,16 @@ export default class LoginController {
   }
 
   @Get('/footnotes')
-  footnotes() {
-    return footnotes
+  footnotes(@Query() { edition }: Edition) {
+    return footnotes[edition]
   }
 
   @Get('/footnote/:index')
-  footnote(@Ctx() ctx: Context, @Params() { index, edition }: Index & Edition) {
+  footnote(
+    @Ctx() ctx: Context,
+    @Params() { index }: Index,
+    @Query() { edition }: Edition
+  ) {
     const footnote = footnotes[edition][index]
     if (!footnote) {
       return ctx.throw(notFound('No footnote found!'))
@@ -110,7 +113,7 @@ export default class LoginController {
   }
 
   @Get('/toc')
-  chapterNames(@Params() { edition }: Edition) {
+  chapterNames(@Query() { edition }: Edition) {
     const book = books[edition]
     return book.map((chapter) => ({
       level: chapter.level,
@@ -130,7 +133,7 @@ export default class LoginController {
   }
 
   @Post('/:format')
-  async epub(
+  async downloadFormat(
     @Ctx() ctx: Context,
     @Body() { signature, message }: Signature,
     @Params() { format }: Format
