@@ -1,6 +1,13 @@
 import Edition from '@/models/Edition'
 
 export default {
+  en: [
+    'introduction',
+    'about-the-author',
+    'about-health',
+    'about-money',
+    'about-relationships',
+  ],
   ru: [
     'vvedenie',
     'ob-avtore',

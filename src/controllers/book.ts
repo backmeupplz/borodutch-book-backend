@@ -2,11 +2,18 @@ import { BigNumber, utils } from 'ethers'
 import { Body, Controller, Ctx, Get, Params, Post, Query } from 'amala'
 import { Context } from 'koa'
 import { badRequest, notFound } from '@hapi/boom'
-import { books, footnotes, versions } from '@/helpers/book'
+import {
+  books,
+  footnotes,
+  slugEditionMap,
+  tocs,
+  versions,
+} from '@/helpers/book'
 import { createReadStream, readdirSync } from 'fs'
 import { cwd } from 'process'
 import { resolve } from 'path'
 import Edition from '@/validators/Edition'
+import EditionModel from '@/models/Edition'
 import Format from '@/validators/Format'
 import Index from '@/validators/Index'
 import OptionalSignature from '@/validators/OptionalSignature'
@@ -15,6 +22,7 @@ import Slug from '@/validators/Slug'
 import balanceOf from '@/helpers/balanceOf'
 import extractSubchapters from '@/helpers/extractSubchapters'
 import freeSlugs from '@/helpers/freeSlugs'
+import lastReadySlugs from '@/helpers/lastReadySlugs'
 import report from '@/helpers/report'
 import reportError from '@/helpers/reportError'
 
@@ -53,7 +61,13 @@ export default class LoginController {
     const allChapters = book
       .concat(extractSubchapters(book))
       .concat(extractSubchapters(extractSubchapters(book)))
-    const chapter = allChapters.find((chapter) => chapter.slug === slug)
+    let chapter = allChapters.find((chapter) => chapter.slug === slug)
+    if (!chapter) {
+      slug = slugEditionMap[slug]?.[edition]
+      if (slug) {
+        chapter = allChapters.find((chapter) => chapter.slug === slug)
+      }
+    }
     if (!chapter) {
       return ctx.throw(notFound('No chapter found!'))
     }
@@ -114,22 +128,17 @@ export default class LoginController {
 
   @Get('/toc')
   chapterNames(@Query() { edition }: Edition) {
-    const book = books[edition]
-    return book.map((chapter) => ({
-      level: chapter.level,
-      title: chapter.title,
-      slug: chapter.slug,
-      subchapters: chapter.subchapters.map((subchapter) => ({
-        level: subchapter.level,
-        title: subchapter.title,
-        slug: subchapter.slug,
-        subchapters: subchapter.subchapters?.map((subchapter) => ({
-          level: subchapter.level,
-          title: subchapter.title,
-          slug: subchapter.slug,
-        })),
-      })),
-    }))
+    return tocs[edition]
+  }
+
+  @Get('/lastReadySlugs')
+  lastReadySlug() {
+    return lastReadySlugs
+  }
+
+  @Get('/allEditionsSlugs')
+  allEditionsSlugs(@Query() { slug }: Slug) {
+    return slugEditionMap[slug]
   }
 
   @Post('/:format')

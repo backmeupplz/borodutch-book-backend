@@ -5,10 +5,21 @@ import { slugify } from 'transliteration'
 import Chapter from '@/models/Chapter'
 import Content from '@/models/Content'
 import Edition from '@/models/Edition'
+import flattenToc from '@/helpers/flattenToc'
 import parse, { HTMLElement, Node } from 'node-html-parser'
 
+function cleanRawText(str: string) {
+  return str
+    .replace(/\t/gi, '')
+    .replace(/\n/gi, '')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&apos;/gi, "'")
+    .replace(/&quot;/gi, '"')
+}
+
 function getSlug(str: string) {
-  return slugify(str, {
+  return slugify(cleanRawText(str), {
     allowedChars: 'a-zA-Z0-9-_',
   })
 }
@@ -17,11 +28,7 @@ function extractContent(node: Node): Content {
   // Termintaion condition
   if (!node.childNodes?.length || !(node instanceof HTMLElement)) {
     return {
-      text: node.rawText
-        .replace(/\t/gi, '')
-        .replace(/\n/gi, '')
-        .replace(/&lt;/gi, '<')
-        .replace(/&gt;/gi, '>'),
+      text: cleanRawText(node.rawText),
     }
   }
   return {
@@ -45,6 +52,25 @@ export const footnotes = {} as Record<
   }[]
 >
 export const books = {} as Record<Edition, Chapter[]>
+export const tocs = {} as Record<
+  Edition,
+  {
+    level: number
+    title: string
+    slug: string
+    subchapters: {
+      level: number
+      title: string
+      slug: string
+      subchapters: {
+        level: number
+        title: string
+        slug: string
+      }[]
+    }[]
+  }[]
+>
+export const slugEditionMap = {} as Record<string, Record<Edition, string>>
 
 export function prepareBookEditions() {
   const editions = ['ru', 'en'] as Edition[]
@@ -76,7 +102,7 @@ export function prepareBookEditions() {
       if (child.attributes.class?.match(/heading-1/i)) {
         tempChapter = {
           level: 0,
-          title: child.rawText,
+          title: cleanRawText(child.rawText),
           slug: getSlug(child.rawText),
           beginning: [],
           subchapters: [],
@@ -91,7 +117,7 @@ export function prepareBookEditions() {
       if (child.attributes.class?.match(/heading-2/i)) {
         tempSubChapter = {
           level: 1,
-          title: child.rawText,
+          title: cleanRawText(child.rawText),
           slug: getSlug(child.rawText),
           beginning: [],
           subchapters: [],
@@ -105,7 +131,7 @@ export function prepareBookEditions() {
       if (child.attributes.class?.match(/heading-3/i)) {
         tempSubSubChapter = {
           level: 2,
-          title: child.rawText,
+          title: cleanRawText(child.rawText),
           slug: getSlug(child.rawText),
           beginning: [],
           subchapters: [],
@@ -148,7 +174,7 @@ export function prepareBookEditions() {
         }
         const url = lastChild.getAttribute('href')
         const footnote = {
-          title,
+          title: cleanRawText(title),
           url,
         }
         if (!footnotes[edition]) {
@@ -158,5 +184,38 @@ export function prepareBookEditions() {
       }
     }
     books[edition] = result
+    tocs[edition] = result.map((chapter) => ({
+      level: chapter.level,
+      title: cleanRawText(chapter.title),
+      slug: chapter.slug,
+      subchapters: chapter.subchapters.map((subchapter) => ({
+        level: subchapter.level,
+        title: subchapter.title,
+        slug: subchapter.slug,
+        subchapters: subchapter.subchapters?.map((subchapter) => ({
+          level: subchapter.level,
+          title: subchapter.title,
+          slug: subchapter.slug,
+        })),
+      })),
+    }))
+  }
+  const flattenedSlugs = Object.keys(tocs).reduce(
+    (prev, cur) => ({
+      ...prev,
+      [cur]: flattenToc(tocs[cur as Edition] || []),
+    }),
+    {} as Record<Edition, string[]>
+  )
+  for (const edition of editions) {
+    const slugs = flattenedSlugs[edition]
+    for (let i = 0; i < slugs.length; i++) {
+      const slug = slugs[i]
+      if (!slugEditionMap[slug])
+        slugEditionMap[slug] = {} as Record<Edition, string>
+      for (const innerEdition of editions) {
+        slugEditionMap[slug][innerEdition] = flattenedSlugs[innerEdition][i]
+      }
+    }
   }
 }
