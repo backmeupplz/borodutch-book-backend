@@ -161,7 +161,6 @@ export function prepareBookEditions() {
         child instanceof HTMLElement &&
         child.getAttribute('class') === 'Endnote'
       ) {
-        // console.log(child)
         const lastChild = child.childNodes.pop()
         if (!lastChild || !(lastChild instanceof HTMLElement)) {
           continue
