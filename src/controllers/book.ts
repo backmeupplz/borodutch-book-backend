@@ -144,7 +144,7 @@ export default class LoginController {
   @Post('/:format')
   async downloadFormat(
     @Ctx() ctx: Context,
-    @Body() { signature, message }: Signature,
+    @Body() { signature, message, edition }: Signature & Edition,
     @Params() { format }: Format
   ) {
     // Check signature and get the owner
@@ -153,7 +153,14 @@ export default class LoginController {
       owner = utils.verifyMessage(message, signature)
     } catch (error) {
       await reportError(error)
-      return ctx.throw(badRequest('Не получилось подтвердить подпись!'))
+      return ctx.throw(
+        badRequest(
+          JSON.stringify({
+            ru: 'Не получилось подтвердить подпись!',
+            en: 'Failed to verify signature!',
+          })
+        )
+      )
     }
     // Check the balance
     let balance: BigNumber
@@ -161,12 +168,24 @@ export default class LoginController {
       balance = await balanceOf(owner)
     } catch (error) {
       await reportError(error)
-      return ctx.throw(badRequest('Не получилось получить баланс!'))
+      return ctx.throw(
+        badRequest(
+          JSON.stringify({
+            ru: 'Не получилось получить баланс!',
+            en: 'Failed to get balance!',
+          })
+        )
+      )
     }
     if (balance.lte(0)) {
       await reportError(`💸 ${owner} без баланса пытается скачать книгу`)
       return ctx.throw(
-        badRequest('Вам необходимо купить NFT, чтобы скачать книгу!')
+        badRequest(
+          JSON.stringify({
+            ru: 'Вам необходимо купить NFT, чтобы скачать книгу!',
+            en: 'You need to buy an NFT to download the book!',
+          })
+        )
       )
     }
     // Check the format
@@ -175,10 +194,17 @@ export default class LoginController {
     )
     const extensions = files.map((name) => name.split('.').slice(1).join('.'))
     if (!extensions.includes(format)) {
-      return ctx.throw(badRequest('Нет такого формата!'))
+      return ctx.throw(
+        badRequest(
+          JSON.stringify({
+            ru: 'Нет такого формата!',
+            en: 'No such format!',
+          })
+        )
+      )
     }
     // Return book.pdf as a file
-    const filePath = resolve(cwd(), 'book', `wdlaty.${format}`)
+    const filePath = resolve(cwd(), 'book', `wdlaty-${edition}.${format}`)
     const fileStream = createReadStream(filePath)
     ctx.attachment(`wdlaty.${format}`)
     await report(`${owner} грузит книгу в формате ${format}`)
