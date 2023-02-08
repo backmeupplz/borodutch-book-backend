@@ -166,7 +166,7 @@ export function prepareBookEditions() {
           continue
         }
         const title =
-          child.text.match(/«(.+)»/i)?.[1] ||
+          child.text.match(/(«|")(.+)(»|")/i)?.[2] ||
           lastChild.text.match(/\d+\. (.+)/i)?.[1]
         if (!title) {
           continue
