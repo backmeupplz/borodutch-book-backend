@@ -1,5 +1,5 @@
 import Edition from '@/models/Edition'
 
 export default {
-  en: '19-just-block-them',
+  en: 'extra-weight',
 } as Record<Edition, string>
