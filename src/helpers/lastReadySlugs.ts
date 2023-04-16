@@ -1,5 +1,5 @@
 import Edition from '@/models/Edition'
 
 export default {
-  en: 'nutrition-and-dietary-supplements',
+  en: 'psychotherapy',
 } as Record<Edition, string>
