@@ -1,5 +1,5 @@
 import Edition from '@/models/Edition'
 
 export default {
-  en: '18-circular-reasoning',
+  en: 'which-studies-can-be-trusted',
 } as Record<Edition, string>
