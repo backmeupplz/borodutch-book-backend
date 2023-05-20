@@ -88,10 +88,10 @@ export function prepareBookEditions() {
     )
     versions[edition] =
       root.getElementById(
-        '_idContainer003'
+        '_idContainer007'
       ).childNodes[1]?.childNodes[0]?.rawText
     const contentChildren = root
-      .getElementById('_idContainer008')
+      .getElementById('_idContainer012')
       .childNodes.filter((c) => c instanceof HTMLElement) as HTMLElement[]
     const result = [] as Chapter[]
     let tempChapter = null as Chapter | null
@@ -155,7 +155,7 @@ export function prepareBookEditions() {
       target?.content.push(extractContent(child))
     }
     // Footnotes
-    const footnotesContainer = root.getElementById('_idContainer009')
+    const footnotesContainer = root.getElementById('_idContainer013')
     for (const child of footnotesContainer.childNodes) {
       if (
         child instanceof HTMLElement &&
