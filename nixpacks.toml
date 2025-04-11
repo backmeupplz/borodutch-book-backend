@@ -1,0 +1,11 @@
+[phases.install]
+cmds = ["yarn install"]
+
+[phases.build]
+cmds = ["yarn build"]
+
+[start]
+cmd = "node dist/server.js"
+
+[variables]
+NODE_ENV = "production"
