@@ -18,4 +18,5 @@ export default cleanEnv(process.env, {
     default: '0x495f947276749ce646f68ac8c248420045cb7b5e',
   }),
   ALCHEMY_API_KEY: str(),
+  ALCHEMY_RPC_URL: str({ default: '' }),
 })

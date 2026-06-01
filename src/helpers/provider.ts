@@ -1,4 +1,8 @@
 import { providers } from 'ethers'
 import env from '@/helpers/env'
 
-export default new providers.AlchemyProvider('homestead', env.ALCHEMY_API_KEY)
+const alchemyRpcUrl =
+  env.ALCHEMY_RPC_URL ||
+  `https://eth-mainnet.g.alchemy.com/v2/${env.ALCHEMY_API_KEY}`
+
+export default new providers.JsonRpcProvider(alchemyRpcUrl, 'homestead')
