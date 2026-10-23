@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@hapi/boom": "^10.0.0",
-    "@koa/cors": "^4.0.0",
+    "@koa/cors": "^5.0.0",
     "amala": "^8.0.2",
     "envalid": "^7.3.1",
     "ethers": "^5.7.2",
