@@ -6,8 +6,8 @@ Backend for the Borodutch Book website
 
 1. Clone this repo: `git clone https://github.com/backmeupplz/borodutch-book-backend`
 2. Create `.env` with the environment variables listed below
-3. Run `yarn` in the root folder
-4. Run `yarn start`
+3. Run `bun install` in the root folder
+4. Run `bun run start`
 
 And you should be good to go! Feel free to fork and submit pull requests.
 
