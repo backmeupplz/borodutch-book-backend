@@ -7,11 +7,11 @@
   "author": "backmeupplz <backmeupplz@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "distribute": "yarn build && node dist/server.js",
+    "distribute": "bun run build && node dist/server.js",
     "start": "tsc-watch --skipLibCheck --onSuccess 'node dist/server.js'",
     "build": "tsc --skipLibCheck",
     "pretty": "prettier --check src",
-    "lint": "yarn pretty && eslint --max-warnings 0 --ext ts,tsx,json src"
+    "lint": "bun run pretty && eslint --max-warnings 0 --ext ts,tsx,json src"
   },
   "dependencies": {
     "@hapi/boom": "^10.0.0",
@@ -51,7 +51,6 @@
   "_moduleAliases": {
     "@": "dist"
   },
-  "packageManager": "yarn@3.4.1",
   "resolutions": {
     "@0x/utils": "https://github.com/ProjectOpensea/0x-tools/raw/provider-patch/utils/0x-utils-6.5.0.tgz"
   }
