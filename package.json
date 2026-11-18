@@ -17,13 +17,17 @@
     "@hapi/boom": "^10.0.0",
     "@koa/cors": "^5.0.0",
     "amala": "^8.0.2",
+    "dotenv": "^16.0.3",
     "envalid": "^7.3.1",
     "ethers": "^5.7.2",
+    "glob": "^7.2.3",
     "grammy": "^1.13.1",
     "koa": "^2.14.1",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^12.0.0",
+    "module-alias": "^2.2.2",
     "node-html-parser": "^6.1.4",
+    "source-map-support": "^0.5.21",
     "transliteration": "^2.3.5"
   },
   "devDependencies": {
@@ -34,7 +38,6 @@
     "@types/node": "^18.11.18",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
-    "dotenv": "^16.0.3",
     "eslint": "^8.33.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-import": "^2.27.5",
@@ -42,9 +45,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-sort-imports-es6-autofix": "^0.6.0",
-    "module-alias": "^2.2.2",
     "prettier": "^2.8.3",
-    "source-map-support": "^0.5.21",
     "tsc-watch": "^6.0.0",
     "typescript": "^4.9.5"
   },
@@ -52,6 +53,16 @@
     "@": "dist"
   },
   "resolutions": {
-    "@0x/utils": "https://github.com/ProjectOpensea/0x-tools/raw/provider-patch/utils/0x-utils-6.5.0.tgz"
+    "@0x/utils": "https://github.com/ProjectOpensea/0x-tools/raw/provider-patch/utils/0x-utils-6.5.0.tgz",
+    "brace-expansion": "^1.1.22",
+    "braces": "^3.0.3",
+    "class-validator": "0.14.4",
+    "elliptic": "^6.6.1",
+    "lodash": "^4.18.1",
+    "minimatch": "^3.1.5",
+    "path-to-regexp": "^6.3.0",
+    "picomatch": "^2.3.2",
+    "qs": "^6.14.1",
+    "ws": "^7.5.11"
   }
 }
