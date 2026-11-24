@@ -15,6 +15,8 @@ COPY package.json bun.lock ./
 RUN --mount=type=bind,from=bun,source=/usr/local/bin/bun,target=/usr/local/bin/bun \
   --mount=type=cache,target=/root/.bun/install/cache,sharing=locked \
   bun install --frozen-lockfile --production --backend=copyfile
+# The runtime only runs node; drop the bundled npm (10.9.9 carries CVEs no 22.x image fixes)
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 COPY . .
 COPY --from=build /app/dist dist
 ENV NODE_ENV=production
